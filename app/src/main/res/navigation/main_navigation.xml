@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/splashFragment">
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.example.aihouse.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_autorizationFragment"
+            app:destination="@id/autorizationFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/autorizationFragment"
+        android:name="com.example.aihouse.initializationPerson.AutorizationFragment"
+        android:label="fragment_autorization"
+        tools:layout="@layout/fragment_autorization" >
+        <action
+            android:id="@+id/action_autorizationFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment" />
+        <action
+            android:id="@+id/action_autorizationFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_autorizationFragment_to_recoveryEmailFragment"
+            app:destination="@id/recoveryEmailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="com.example.aihouse.initializationPerson.RegistrationFragment"
+        android:label="fragment_registration"
+        tools:layout="@layout/fragment_registration" >
+        <action
+            android:id="@+id/action_registrationFragment_to_autorizationFragment"
+            app:destination="@id/autorizationFragment" />
+        <action
+            android:id="@+id/action_registrationFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/recoveryCodeFragment"
+        android:name="com.example.aihouse.initializationPerson.RecoveryCodeFragment"
+        android:label="fragment_recovery_code"
+        tools:layout="@layout/fragment_recovery_code" >
+        <action
+            android:id="@+id/action_recoveryCodeFragment_to_recoveryPasswordFragment"
+            app:destination="@id/recoveryPasswordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/recoveryPasswordFragment"
+        android:name="com.example.aihouse.initializationPerson.RecoveryPasswordFragment"
+        android:label="fragment_recovery_password"
+        tools:layout="@layout/fragment_recovery_password" >
+        <action
+            android:id="@+id/action_recoveryPasswordFragment_to_autorizationFragment"
+            app:destination="@id/autorizationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.aihouse.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_autorizationFragment"
+            app:destination="@id/autorizationFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_createPublicationFragment"
+            app:destination="@id/createPublicationFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_createDiscussionFragment"
+            app:destination="@id/createDiscussionFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_notificationFragment"
+            app:destination="@id/notificationFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_userPageFragment"
+            app:destination="@id/userPageFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_discussionFragment"
+            app:destination="@id/discussionFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_publicationFragment"
+            app:destination="@id/publicationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.aihouse.person.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/createPublicationFragment"
+        android:name="com.example.aihouse.publications.CreatePublicationFragment"
+        android:label="fragment_create_publication"
+        tools:layout="@layout/fragment_create_publication" />
+    <fragment
+        android:id="@+id/createDiscussionFragment"
+        android:name="com.example.aihouse.discussions.CreateDiscussionFragment"
+        android:label="fragment_create_discussion"
+        tools:layout="@layout/fragment_create_discussion" />
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.example.aihouse.person.NotificationsFragment"
+        android:label="fragment_notification"
+        tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/recoveryEmailFragment"
+        android:name="com.example.aihouse.initializationPerson.RecoveryEmailFragment"
+        android:label="RecoveryEmailFragment" >
+        <action
+            android:id="@+id/action_recoveryEmailFragment_to_recoveryCodeFragment"
+            app:destination="@id/recoveryCodeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/publicationFragment"
+        android:name="com.example.aihouse.publications.PublicationFragment"
+        android:label="fragment_publication"
+        tools:layout="@layout/fragment_publication" />
+    <fragment
+        android:id="@+id/discussionFragment"
+        android:name="com.example.aihouse.discussions.DiscussionFragment"
+        android:label="fragment_discussion"
+        tools:layout="@layout/fragment_discussion" />
+    <fragment
+        android:id="@+id/userPageFragment"
+        android:name="com.example.aihouse.person.UserPageFragment"
+        android:label="fragment_user_page"
+        tools:layout="@layout/fragment_user_page" />
+</navigation>

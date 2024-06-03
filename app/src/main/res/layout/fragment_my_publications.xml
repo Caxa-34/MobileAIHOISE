@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".publications.MyPublicationsFragment" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginVertical="12dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/search_mypublications"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/background_searchview"
+
+            android:drawableEnd="@drawable/ic_search"
+            android:fontFamily="@font/roboto"
+            android:hint="введите название темы или автора"
+            android:inputType="text"
+            android:padding="12dp"
+            android:textColor="@color/gray_primary_color"
+            android:textColorHint="@color/gray_secondary_color"
+            android:textSize="14sp">
+
+        </EditText>
+
+        <RadioGroup
+            android:id="@+id/filters_mypublications"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="4dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/filterPublished_mypublications"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginRight="4dp"
+                android:background="@drawable/bg_feed_filter_selector"
+                android:button="@null"
+                android:paddingHorizontal="8dp"
+                android:text="опубликованные"
+                android:textColor="@drawable/txtcolor_feed_filter_selector"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/filterDrafts_mypublications"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginRight="4dp"
+                android:background="@drawable/bg_feed_filter_selector"
+                android:button="@null"
+                android:paddingHorizontal="8dp"
+                android:text="черновики"
+                android:textColor="@drawable/txtcolor_feed_filter_selector"
+                android:textSize="14sp" />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="32dp"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/user_publication_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" />
+
+            <include
+                layout="@layout/user_publication_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" />
+
+            <include
+                layout="@layout/user_publication_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

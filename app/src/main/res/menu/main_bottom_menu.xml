@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_publications"
+        android:icon="@drawable/image_publications"
+        android:title="Публикации" />
+
+    <item
+        android:id="@+id/navigation_discussions"
+        android:icon="@drawable/image_discussions"
+        android:title="Обсуждения"
+        />
+</menu>
