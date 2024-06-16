@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.aihouse.api.ApiHelper
 import com.example.aihouse.api.LoginRequest
@@ -35,8 +36,6 @@ class SplashFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val controller = findNavController()
-
-
         Handler(Looper.getMainLooper()).postDelayed({
             authorization()
         }, delay)
@@ -47,6 +46,9 @@ class SplashFragment : Fragment() {
         val email = sharedPreferences.getString("email", "") ?: ""
         val username = sharedPreferences.getString("username", "") ?: ""
         val password = sharedPreferences.getString("password", "") ?: ""
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.splashFragment, true) // Удаляем сплеш из стека
+            .build()
 
         var req = LoginRequest(
             name = username,
@@ -59,50 +61,58 @@ class SplashFragment : Fragment() {
         var controller = findNavController()
 
         lifecycleScope.launch {
+            val resultRules = ApiHelper.getRules()
+            resultRules.onSuccess { response ->
+                Helper.rules = response.rules!!
+            }
             val resultName = ApiHelper.loginNameUser(req)
             resultName.onSuccess { response ->
 
                 if (response.message == "NameExists") {
-                    controller.navigate(R.id.autorizationFragment)
+                    controller.navigate(R.id.autorizationFragment, null, navOptions)
                     return@launch
                 }
                 if (response.message == "InvalidPass") {
-                    controller.navigate(R.id.autorizationFragment)
+                    controller.navigate(R.id.autorizationFragment, null, navOptions)
                     return@launch
                 }
 
                 if (response.message == "UserFound") {
                     Helper.currentUser = response.userData!!
                     Helper.saveUserData(requireContext(), Helper.currentUser.email, Helper.currentUser.name, req.password)
-                    controller.navigate(R.id.mainFragment)
+                    controller.navigate(R.id.mainFragment, null, navOptions)
                     return@launch
                 }
-                controller.navigate(R.id.autorizationFragment)
+                controller.navigate(R.id.autorizationFragment, null, navOptions)
                 return@launch
             }.onFailure { error ->
+                Log.e("ERROR AUTHORIZ", error.message!!);
+                controller.navigate(R.id.autorizationFragment, null, navOptions)
             }
             val resultEmail = ApiHelper.loginNameUser(req)
             resultEmail.onSuccess { response ->
 
                 if (response.message == "EmailExists") {
-                    controller.navigate(R.id.autorizationFragment)
+                    controller.navigate(R.id.autorizationFragment, null, navOptions)
                     return@launch
                 }
                 if (response.message == "InvalidPass") {
-                    controller.navigate(R.id.autorizationFragment)
+                    controller.navigate(R.id.autorizationFragment, null, navOptions)
                     return@launch
                 }
 
                 if (response.message == "UserFound") {
                     Helper.currentUser = response.userData!!
                     Helper.saveUserData(requireContext(), Helper.currentUser.email, Helper.currentUser.name, req.password)
-                    controller.navigate(R.id.mainFragment)
+                    controller.navigate(R.id.mainFragment, null, navOptions)
                     return@launch
                 }
 
-                controller.navigate(R.id.autorizationFragment)
+                controller.navigate(R.id.autorizationFragment, null, navOptions)
                 return@launch
             }.onFailure { error ->
+                Log.e("ERROR AUTHORIZ", error.message!!);
+                controller.navigate(R.id.autorizationFragment, null, navOptions)
             }
         }
     }

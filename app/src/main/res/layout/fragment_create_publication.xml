@@ -17,7 +17,7 @@
         app:layout_constraintBottom_toTopOf="@+id/llBottom_recovery_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llTop_recovery_email" />
+        app:layout_constraintTop_toBottomOf="@+id/llTop_creatediscussion" />
 
     <LinearLayout
         android:id="@+id/llTop_createpublication"

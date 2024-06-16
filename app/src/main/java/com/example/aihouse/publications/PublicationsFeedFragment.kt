@@ -14,19 +14,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.aihouse.Helper
 import com.example.aihouse.api.ApiHelper
-import com.example.aihouse.api.GetFeedPublicaionsRequest
 import com.example.aihouse.api.SearchRequest
+import com.example.aihouse.api.UserRequest
 import com.example.aihouse.cards.PublicationCard
 import com.example.aihouse.cards.UserCard
 import com.example.aihouse.databinding.FragmentPublicationsFeedBinding
 import com.example.aihouse.models.Publication
 import com.example.aihouse.models.User
 import kotlinx.coroutines.launch
-
-sealed class FeedItem {
-    data class PublicationItem(val publicationCard: PublicationCard) : FeedItem()
-    data class UserItem(val userCard: UserCard) : FeedItem()
-}
 
 class PublicationsFeedFragment : Fragment() {
     private lateinit var binding: FragmentPublicationsFeedBinding
@@ -68,7 +63,7 @@ class PublicationsFeedFragment : Fragment() {
                         binding.filterPublicationsPublicationsfeed.isChecked = true
                     }
 
-                    Log.e("SHOW PUBLICATIONS", "SHOW")
+                    //Log.e("SHOW PUBLICATIONS", "SHOW")
 
                     if (currentSearchNotEmpty) {
                         search()
@@ -99,7 +94,7 @@ class PublicationsFeedFragment : Fragment() {
         //Toast.makeText(requireNotNull(context), "Feed", Toast.LENGTH_SHORT).show()
 
         var req = SearchRequest(
-            idAuthor = Helper.currentUser.id,
+            idUser = Helper.currentUser.id,
             fragment = binding.searchPublicationsfeed.text.toString()
         )
         lifecycleScope.launch {
@@ -117,26 +112,27 @@ class PublicationsFeedFragment : Fragment() {
     }
     private fun searchAuthors() {
         var req = SearchRequest(
-            idAuthor = Helper.currentUser.id,
+            idUser = Helper.currentUser.id,
             fragment = binding.searchPublicationsfeed.text.toString()
         )
         lifecycleScope.launch {
             val res = ApiHelper.searchAuthors(req)
             res.onSuccess { response ->
                 usersSearched = response.users!!
+                Log.e("USERSSERARC", usersSearched.toString())
                 usersSearched = usersSearched.sortedByDescending { it.countLetters!! }
                 adapterUserFeed = UserFeedAdapter(requireContext(), usersSearched, lifecycleScope)
                 binding.feedPublicationfeed.layoutManager = LinearLayoutManager(context)
-                binding.feedPublicationfeed.adapter = adapterFeed
+                binding.feedPublicationfeed.adapter = adapterUserFeed
             }.onFailure { error ->
-
+                Log.e("ERROR: USERSSERARC", usersSearched.size.toString())
             }
         }
     }
 
     private fun showfeed() {
-        var req = GetFeedPublicaionsRequest(
-            idAuthor = Helper.currentUser.id
+        var req = UserRequest(
+            idUser = Helper.currentUser.id
         )
         lifecycleScope.launch {
             val res = ApiHelper.getFeedPublications(req)
@@ -158,5 +154,6 @@ class PublicationsFeedFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         binding.searchPublicationsfeed.removeTextChangedListener(textWatcher)
+        textWatcher = null
     }
 }

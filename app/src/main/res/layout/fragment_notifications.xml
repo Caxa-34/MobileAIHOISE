@@ -76,28 +76,15 @@
             android:layout_height="match_parent"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
             android:scrollbarThumbVertical="@drawable/custom_scrollbar_vert"
             android:scrollbars="none">
 
-            <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listNotifs_notfication"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingHorizontal="2dp">
-
-                <include
-                    layout="@layout/notification_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-                <include
-                    layout="@layout/notification_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-            </LinearLayout>
+                android:paddingHorizontal="2dp" />
         </ScrollView>
 
     </LinearLayout>

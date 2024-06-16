@@ -4,24 +4,32 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.aihouse.api.ApiHelper
+import com.example.aihouse.api.RegisterRequest
+import com.example.aihouse.api.UserRequest
 import com.example.aihouse.databinding.ActionsRightPanelBinding
 import com.example.aihouse.databinding.FragmentMainBinding
 import com.example.aihouse.databinding.PersonLeftPanelBinding
 import com.example.aihouse.discussions.DiscussionsFeedFragment
 import com.example.aihouse.discussions.MyDiscussionsFragment
+import com.example.aihouse.person.MySubscriptionsFragment
 import com.example.aihouse.publications.MyPublicationsFragment
 import com.example.aihouse.publications.PublicationsFeedFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.launch
 
 class MainFragment : Fragment() {
     private lateinit var binding: FragmentMainBinding
@@ -82,6 +90,7 @@ class MainFragment : Fragment() {
         val discussionsFeed = DiscussionsFeedFragment()
         val myPublications = MyPublicationsFragment()
         val myDiscussons = MyDiscussionsFragment()
+        val mySubscriptions = MySubscriptionsFragment()
         binding.navBottomMenuMain.setOnItemSelectedListener { item ->
             //Toast.makeText(context, "ChangingFeed", Toast.LENGTH_SHORT).show()
             when (item.itemId) {
@@ -112,6 +121,12 @@ class MainFragment : Fragment() {
             binding.txtTitleMain.setText(myDiscussons.title)
             binding.navBottomMenuMain.uncheckAllItems()
         }
+        bindingPerson.btnMySubscriptionsLeftpanel.setOnClickListener {
+            binding.drawerMain.closeDrawer(GravityCompat.START)
+            setCurrentFeed(mySubscriptions)
+            binding.txtTitleMain.setText(mySubscriptions.title)
+            binding.navBottomMenuMain.uncheckAllItems()
+        }
 
         var act = arguments?.getString("act")
         binding.drawerMain.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
@@ -126,8 +141,26 @@ class MainFragment : Fragment() {
     }
 
     private fun showUserData() {
-        binding.personLeftPanel.txtNicknameLeftpanel.setText(Helper.currentUser.name)
-        binding.personLeftPanel.txtIdPersonLeftpanel.setText("ID: " + Helper.currentUser.id)
+        bindingPerson.txtNicknameLeftpanel.setText(Helper.currentUser.name)
+        bindingPerson.txtIdPersonLeftpanel.setText("ID: " + Helper.currentUser.id)
+        var req = UserRequest(
+            idUser = Helper.currentUser.id
+        )
+        lifecycleScope.launch {
+            val result = ApiHelper.getMyNotifs(req)
+            result.onSuccess { response ->
+                Helper.notifications = response.notifications!!
+                val readntCount = Helper.notifications.count { !it.wasRead!! }
+                bindingPerson.txtNotifLeftpanel.setText(readntCount.toString())
+                if (readntCount == 0) {
+                    bindingPerson.imgNotifLeftpanel.setImageResource(R.drawable.ic_no_notification)
+                    bindingPerson.txtNotifLeftpanel.setText("")
+                    binding.imgNotifMain.visibility = View.GONE
+                }
+            }.onFailure { error ->
+                Log.e("ERROR NOTIF", "Error: ${error.message}")
+            }
+        }
     }
 
     private fun setCurrentFeed(fragment: Fragment) =
@@ -146,13 +179,16 @@ class MainFragment : Fragment() {
 
     fun showRules() {
         var rulesDialogBinding = layoutInflater.inflate(R.layout.rules_dialog, null)
-        var rulesDialog = Dialog(binding.personLeftPanel.btnRulesForumLeftpanel.context)
+        var rulesDialog = Dialog(bindingPerson.btnRulesForumLeftpanel.context)
 
         rulesDialogBinding.findViewById<CheckBox>(R.id.chbAgree_rules).visibility = View.GONE
         rulesDialogBinding.findViewById<Button>(R.id.btnPositiveResult_rules).setText("Ок")
         rulesDialogBinding.findViewById<Button>(R.id.btnPositiveResult_rules).setOnClickListener {
             rulesDialog.dismiss()
         }
+        val txtRules = Helper.rules.joinToString(separator = "\n\n") { it.text }
+        rulesDialogBinding.findViewById<TextView>(R.id.txtRules_ruleagree).setText(txtRules)
+
         rulesDialog.setContentView(rulesDialogBinding)
         rulesDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         rulesDialog.show()
@@ -160,7 +196,7 @@ class MainFragment : Fragment() {
 
     fun showExitDialog() {
         var exitDialogBinding = layoutInflater.inflate(R.layout.exit_account_dialog, null)
-        var exitDialog = Dialog(binding.personLeftPanel.btnRulesForumLeftpanel.context)
+        var exitDialog = Dialog(bindingPerson.btnRulesForumLeftpanel.context)
         exitDialogBinding.findViewById<Button>(R.id.btnCancel_exitacc).setOnClickListener {
             exitDialog.dismiss()
         }

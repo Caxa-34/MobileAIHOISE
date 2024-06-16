@@ -160,4 +160,14 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">25%</item>
     </style>
+    <style name="customDatePickerDialogTheme" parent="Theme.MaterialComponents.Light.Dialog">
+        <!-- Цвет основного фона диалога -->
+        <item name="colorBackgroundFloating">@color/white</item>
+        <!-- Цвет выделенного текста (например, выбранная дата) -->
+        <item name="colorAccent">@color/main_color</item>
+        <!-- Цвет текста в заголовке и кнопках -->
+        <item name="android:textColorPrimary">@color/gray_primary_color</item>
+        <!-- Цвет текста для вторичных элементов -->
+        <item name="android:textColorSecondary">@color/gray_secondary_color</item>
+    </style>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.aihouse.person
 
+import android.app.DatePickerDialog
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -7,22 +8,41 @@ import android.os.Bundle
 import android.text.InputType
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
+import com.example.aihouse.Helper
 import com.example.aihouse.R
+import androidx.lifecycle.lifecycleScope
+import com.example.aihouse.api.ApiHelper
+import com.example.aihouse.api.SetUserInfoRequest
+import com.example.aihouse.api.UserRequest
 import com.example.aihouse.databinding.ChangeAvatarDialogBinding
 import com.example.aihouse.databinding.ChangeNicknameDialogBinding
 import com.example.aihouse.databinding.ChangePasswordDialogBinding
 import com.example.aihouse.databinding.DeleteUserDialogBinding
 import com.example.aihouse.databinding.FragmentSettingsBinding
+import com.example.aihouse.models.UserGender
+import com.example.aihouse.models.UserSetting
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
 
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
+
+    private lateinit var genders: MutableList<UserGender>
+    private lateinit var mySettings: UserSetting
+    private var selectedDate: LocalDateTime? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,6 +100,119 @@ class SettingsFragment : Fragment() {
         binding.btnChangePassAccsetting.setOnClickListener {
             showChangePassDialog()
         }
+        binding.dateBirthdaySettings.setOnClickListener {
+            showDatePicker()
+        }
+        binding.btnSaveSettings.setOnClickListener {
+            saveSettings()
+        }
+        showSettingsLoad()
+    }
+
+    private fun saveSettings() {
+        var aboutMe = binding.etAboutMeSettings.text.toString()
+        var idGender = (binding.spinGenderSettings.selectedItem as UserGender).id
+        var req = SetUserInfoRequest (
+            idUser = Helper.currentUser.id,
+            aboutMe = if (aboutMe.isNullOrEmpty()) null else aboutMe,
+            idGender = if (idGender == 0) null else idGender,
+            birthday = if (selectedDate == null) null else selectedDate.toString(),
+            notifResponse = binding.notifResponseSettings.isChecked,
+            notifReference = binding.notifReferenceSettings.isChecked,
+            notifSubscribe = binding.notifSubscribeSettings.isChecked,
+            notifLike = binding.notifLikeSettings.isChecked,
+            notifComment = binding.notifCommentSettings.isChecked,
+            privateShowSubscriber = binding.privateShowSubscriberSettings.isChecked,
+            mobileGetPush = binding.mobileGetPushSettings.isChecked,
+            notifTechnical = binding.notifTechnicalSettings.isChecked
+        )
+        lifecycleScope.launch {
+            val res = ApiHelper.setUserInfo(req)
+            res.onSuccess { response ->
+                if (response.title == "Success")
+                    Toast.makeText(requireContext(), "Сохранено!", Toast.LENGTH_SHORT).show()
+                Log.e("SAVING SETTINGS", response.message.toString())
+            }.onFailure { error ->
+                Log.e("SAVING SETTINGS", error.message.toString())
+            }
+        }
+    }
+
+    private fun showSettingsLoad() {
+        var req = UserRequest(
+            idUser = Helper.currentUser.id
+        )
+        lifecycleScope.launch {
+            val res = ApiHelper.getUserInfo(req)
+            res.onSuccess { response ->
+                genders = mutableListOf(
+                    UserGender(0, "Не указывать"),
+                )
+                mySettings = response.userSettings!!
+                genders.addAll( response.genders!! )
+            }.onFailure { error ->
+                Log.e("ERROR SETTINGS", error.message.toString());
+            }
+
+            binding.notifResponseSettings.isChecked = mySettings.notifResponse!!
+            binding.notifReferenceSettings.isChecked = mySettings.notifReference!!
+            binding.notifSubscribeSettings.isChecked = mySettings.notifSubscribe!!
+            binding.notifLikeSettings.isChecked = mySettings.notifLike!!
+            binding.notifCommentSettings.isChecked = mySettings.notifComment!!
+            binding.privateShowSubscriberSettings.isChecked = mySettings.privateShowSubscriber!!
+            binding.mobileGetPushSettings.isChecked = mySettings.mobileGetPush!!
+            binding.notifTechnicalSettings.isChecked = mySettings.notifTechnical!!
+
+            binding.spinGenderSettings.adapter = GenderSpinnerAdapter(requireContext(), genders)
+            binding.spinGenderSettings.setSelection(0)
+
+            if (mySettings.birthday != null) {
+                selectedDate = ApiHelper.parseDateTime(mySettings.birthday!!)
+                val dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                binding.dateBirthdaySettings.text = selectedDate?.format(dateFormat)
+
+            }
+
+            binding.etAboutMeSettings.setText(mySettings.aboutMe)
+
+            if (mySettings.idGender != null) {
+                val selectedGenderPosition = genders.indexOfFirst { it.id == mySettings.idGender }
+                if (selectedGenderPosition >= 0) {
+                    binding.spinGenderSettings.setSelection(selectedGenderPosition)
+                }
+            }
+        }
+    }
+
+    private fun showDatePicker() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            R.style.customDatePickerDialogTheme,
+            DatePickerDialog.OnDateSetListener { _, selectedYear, selectedMonth, selectedDayOfMonth ->
+                val selectedCalendar = Calendar.getInstance().apply {
+                    set(selectedYear, selectedMonth, selectedDayOfMonth)
+                }
+
+                // Преобразование в LocalDateTime
+                selectedDate = selectedCalendar.time.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime()
+
+                // Форматирование и отображение выбранной даты
+                val dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                binding.dateBirthdaySettings.text = selectedDate?.format(dateFormat)
+            },
+            year, month, dayOfMonth
+        )
+
+
+
+        datePickerDialog.show()
     }
 
     fun showSettings(clickedButton: Button) {

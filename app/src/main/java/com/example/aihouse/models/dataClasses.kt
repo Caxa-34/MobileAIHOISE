@@ -15,9 +15,22 @@ data class User (
     val age: Int?,
     val aboutMe: String?,
     val idState: Int?,
-    val countLetters: Int?
+    val countLetters: Int?,
+    var isSetSubscribe: Boolean?
 )
 
+data class Draft (
+    val id: Int?,
+    val title: String?,
+    val text: String?,
+    val idAuthor: Int?,
+    val dateUpdate: String?
+)
+
+data class Rule (
+    val id: Int,
+    val text: String
+)
 data class Image (
     val id: Int,
     val name: String,
@@ -29,6 +42,21 @@ data class Image (
 data class UserGender (
     val id: Int,
     val title: String,
+)
+
+data class UserSetting (
+    val idGender: Int?,
+    val birthday: String?,
+    val aboutMe: String?,
+    val age: Int?,
+    val notifTechnical: Boolean?,
+    val notifResponse: Boolean?,
+    val notifReference: Boolean?,
+    val notifSubscribe: Boolean?,
+    val notifLike: Boolean?,
+    val notifComment: Boolean?,
+    val privateShowSubscriber: Boolean?,
+    val mobileGetPush: Boolean?
 )
 
 data class PublicationComment(
@@ -51,14 +79,20 @@ data class Publication(
     val countComplaints: Int?,
     val countLetters: Int?,
     val author: User?,
-    val isSetLike: Boolean?
+    val isSetLike: Boolean?,
+    var isSetSubscribe: Boolean?
 )
 
 data class Notification(
     val id: Int?,
     val idRecipient: Int?,
     val idSender: Int?,
+    val idPublication: Int?,
+    val idDiscussion: Int?,
     val idType: Int?,
-    val wasRead: Boolean?
+    val wasRead: Boolean?,
+    val title: String?,
+    val text: String?,
+    val dateCreate: String?
 )
 

@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
@@ -69,11 +70,6 @@ class RegistrationFragment : Fragment() {
         binding.etEmailRegistration.etTextEtcustom.setHint("Email")
         binding.etPasswordRegistration.etTextEtcustom.setHint("Придумайте пароль")
 
-        binding.etNameRegistration.etTextEtcustom.inputType = InputType.TYPE_CLASS_TEXT
-        binding.etEmailRegistration.etTextEtcustom.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-        binding.etPasswordRegistration.etTextEtcustom.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
-        binding.etPasswordRegistration.etTextEtcustom.transformationMethod = HideReturnsTransformationMethod.getInstance()
-
         binding.etPasswordRegistration.chbShowPassEtcustom.visibility = View.VISIBLE
         binding.etPasswordRegistration.chbShowPassEtcustom.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked)
@@ -83,6 +79,11 @@ class RegistrationFragment : Fragment() {
         }
 
         binding.btnRegistrationRegistration.isEnabled = false
+
+        binding.etNameRegistration.etTextEtcustom.inputType = InputType.TYPE_CLASS_TEXT
+        binding.etEmailRegistration.etTextEtcustom.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+        binding.etPasswordRegistration.etTextEtcustom.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+        binding.etPasswordRegistration.etTextEtcustom.transformationMethod = PasswordTransformationMethod.getInstance()
     }
 
     fun checkData() : Boolean {
@@ -90,13 +91,14 @@ class RegistrationFragment : Fragment() {
         var email = binding.etEmailRegistration.etTextEtcustom.text.toString()
         var pass = binding.etPasswordRegistration.etTextEtcustom.text.toString()
         if (name.isNullOrEmpty() || name == "") return false
-        if (email.isNullOrEmpty() || email == "" || !email.contains("@") || !email.contains(".")) return false
-        if (pass.isNullOrEmpty() || pass == "") return false
         if (name.length > 16) {
             binding.etNameRegistration.etErrorEtcustom.setText("Длина больше 16")
             binding.etNameRegistration.etErrorEtcustom.visibility = View.VISIBLE
             return false
         }
+        if (email.isNullOrEmpty() || email == "" || !email.contains("@") || !email.contains(".")) return false
+        if (pass.isNullOrEmpty() || pass == "") return false
+
 
         return true
     }
@@ -139,6 +141,10 @@ class RegistrationFragment : Fragment() {
             rulesDialog.dismiss()
             registration()
         }
+
+        val txtRules = Helper.rules.joinToString(separator = "\n\n") { it.text }
+        rulesDialogBinding.findViewById<TextView>(R.id.txtRules_ruleagree).setText(txtRules)
+
         rulesDialog.setContentView(rulesDialogBinding)
         rulesDialog.setCancelable(false)
         rulesDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -169,10 +175,14 @@ class RegistrationFragment : Fragment() {
                     return@launch
                 }
 
-                Helper.currentUser = response.userData!!
-                Helper.saveUserData(requireContext(), req.email, req.name, req.password)
-                var controller = findNavController()
-                controller.navigate(R.id.mainFragment)
+                if (response.message == "UserCreated") {
+                    Helper.currentUser = response.userData!!
+                    Helper.saveUserData(requireContext(), req.email, req.name, req.password)
+                    var controller = findNavController()
+                    controller.navigate(R.id.mainFragment)
+                    Log.e("Зарегался!", Helper.currentUser.toString())
+                    Toast.makeText(requireContext(), "Зарегался!", Toast.LENGTH_SHORT).show()
+                }
             }.onFailure { error ->
                 //Toast.makeText(context, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
             }

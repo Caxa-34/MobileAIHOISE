@@ -15,14 +15,20 @@ import java.time.temporal.ChronoField
 object ApiHelper {
     fun parseDateTime(dateTimeString: String): LocalDateTime {
         val formatter = DateTimeFormatterBuilder()
-            .appendPattern("yyyy-MM-dd'T'HH:mm:ss")
+            .appendPattern("yyyy-MM-dd HH:mm:ss")
             .optionalStart()
             .appendFraction(ChronoField.MILLI_OF_SECOND, 0, 3, true)
             .optionalEnd()
-            .appendPattern("'Z'")
             .toFormatter()
 
-        return LocalDateTime.parse(dateTimeString, formatter)
+        val localDateTime = LocalDateTime.parse(dateTimeString, formatter)
+        // Добавляем один день
+        return localDateTime
+    }
+
+    fun formatDateTime(localDateTime: LocalDateTime): String {
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+        return localDateTime.format(formatter)
     }
 
     suspend fun registerUser(request: RegisterRequest): Result<CustomResponse> {
@@ -97,7 +103,48 @@ object ApiHelper {
             Result.failure(e)
         }
     }
-    suspend fun getFeedPublications(request: GetFeedPublicaionsRequest): Result<CustomResponse> {
+
+    suspend fun setUserInfo(request: SetUserInfoRequest): Result<CustomResponse> {
+        val apiService = RetrofitClient.instance.create(ApiService::class.java)
+        return try {
+            val response = withContext(Dispatchers.IO) {
+                apiService.setUserInfo(request).execute()
+            }
+            if (response.isSuccessful) {
+                //Log.e("FEED BODY JSON", response.body().toString())
+                Result.success(response.body()!!)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val gson = Gson()
+                val errorResponse = gson.fromJson(errorBody, CustomResponse::class.java)
+                Result.success(errorResponse)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getUserInfo(request: UserRequest): Result<CustomResponse> {
+        val apiService = RetrofitClient.instance.create(ApiService::class.java)
+        return try {
+            val response = withContext(Dispatchers.IO) {
+                apiService.getUserInfo(request).execute()
+            }
+            if (response.isSuccessful) {
+                //Log.e("FEED BODY JSON", response.body().toString())
+                Result.success(response.body()!!)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val gson = Gson()
+                val errorResponse = gson.fromJson(errorBody, CustomResponse::class.java)
+                Result.success(errorResponse)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getFeedPublications(request: UserRequest): Result<CustomResponse> {
         val apiService = RetrofitClient.instance.create(ApiService::class.java)
         return try {
             val response = withContext(Dispatchers.IO) {
@@ -134,6 +181,45 @@ object ApiHelper {
             Result.failure(e)
         }
     }
+
+    suspend fun getMyPublications(request: UserRequest): Result<CustomResponse> {
+        val apiService = RetrofitClient.instance.create(ApiService::class.java)
+        return try {
+            val response = withContext(Dispatchers.IO) {
+                apiService.getMyPublications(request).execute()
+            }
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val gson = Gson()
+                val errorResponse = gson.fromJson(errorBody, CustomResponse::class.java)
+                Result.success(errorResponse)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getMySubsctiptions(request: UserRequest): Result<CustomResponse> {
+        val apiService = RetrofitClient.instance.create(ApiService::class.java)
+        return try {
+            val response = withContext(Dispatchers.IO) {
+                apiService.getSubscribtions(request).execute()
+            }
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val gson = Gson()
+                val errorResponse = gson.fromJson(errorBody, CustomResponse::class.java)
+                Result.success(errorResponse)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun searchAuthors(request: SearchRequest): Result<CustomResponse> {
         val apiService = RetrofitClient.instance.create(ApiService::class.java)
         return try {
@@ -175,6 +261,135 @@ object ApiHelper {
         return try {
             val response = withContext(Dispatchers.IO) {
                 apiService.likePublication(request).execute()
+            }
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val gson = Gson()
+                val errorResponse = gson.fromJson(errorBody, CustomResponse::class.java)
+                Result.success(errorResponse)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    suspend fun subscribe(request: SubscribeReqest): Result<CustomResponse> {
+        val apiService = RetrofitClient.instance.create(ApiService::class.java)
+        return try {
+            val response = withContext(Dispatchers.IO) {
+                apiService.subscribe(request).execute()
+            }
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val gson = Gson()
+                val errorResponse = gson.fromJson(errorBody, CustomResponse::class.java)
+                Result.success(errorResponse)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    suspend fun addDraft(request: DraftRequest): Result<CustomResponse> {
+        val apiService = RetrofitClient.instance.create(ApiService::class.java)
+        return try {
+            val response = withContext(Dispatchers.IO) {
+                apiService.addDraft(request).execute()
+            }
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val gson = Gson()
+                val errorResponse = gson.fromJson(errorBody, CustomResponse::class.java)
+                Result.success(errorResponse)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    suspend fun updateDraft(request: DraftRequest): Result<CustomResponse> {
+        val apiService = RetrofitClient.instance.create(ApiService::class.java)
+        return try {
+            val response = withContext(Dispatchers.IO) {
+                apiService.updateDraft(request).execute()
+            }
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val gson = Gson()
+                val errorResponse = gson.fromJson(errorBody, CustomResponse::class.java)
+                Result.success(errorResponse)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    suspend fun getMyDrafts(request: DraftRequest): Result<CustomResponse> {
+        val apiService = RetrofitClient.instance.create(ApiService::class.java)
+        return try {
+            val response = withContext(Dispatchers.IO) {
+                apiService.getMyDrafts(request).execute()
+            }
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val gson = Gson()
+                val errorResponse = gson.fromJson(errorBody, CustomResponse::class.java)
+                Result.success(errorResponse)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getRules(): Result<CustomResponse> {
+        val apiService = RetrofitClient.instance.create(ApiService::class.java)
+        return try {
+            val response = withContext(Dispatchers.IO) {
+                apiService.getRules().execute()
+            }
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val gson = Gson()
+                val errorResponse = gson.fromJson(errorBody, CustomResponse::class.java)
+                Result.success(errorResponse)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getMyNotifs(request: UserRequest): Result<CustomResponse> {
+        val apiService = RetrofitClient.instance.create(ApiService::class.java)
+        return try {
+            val response = withContext(Dispatchers.IO) {
+                apiService.getMyNotifs(request).execute()
+            }
+            if (response.isSuccessful) {
+                Result.success(response.body()!!)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val gson = Gson()
+                val errorResponse = gson.fromJson(errorBody, CustomResponse::class.java)
+                Result.success(errorResponse)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun readNotif(request: NotificationRequest): Result<CustomResponse> {
+        val apiService = RetrofitClient.instance.create(ApiService::class.java)
+        return try {
+            val response = withContext(Dispatchers.IO) {
+                apiService.readNotif(request).execute()
             }
             if (response.isSuccessful) {
                 Result.success(response.body()!!)

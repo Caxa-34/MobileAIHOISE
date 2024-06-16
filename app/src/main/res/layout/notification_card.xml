@@ -5,34 +5,49 @@
     android:id="@+id/imgBackground_notification"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
     android:background="@drawable/background_black_border"
     android:padding="8dp">
 
     <TextView
-        android:id="@+id/txtText_notification"
+        android:id="@+id/txtTitle_notification"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginRight="48dp"
-        android:layout_marginBottom="32dp"
         android:fontFamily="@font/roboto_medium"
-        android:text="TextViewsduiadofjgndawfegsjalg"
+        android:text="title notif"
         android:textColor="@color/gray_primary_color"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/txtText_notification"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="48dp"
+        android:fontFamily="@font/roboto"
+        android:text="text notif"
+        android:textColor="@color/gray_primary_color"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtTitle_notification" />
+
+    <TextView
         android:id="@+id/txtDate_notification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/roboto"
         android:text="Сегодня 0.00"
         android:textColor="@color/gray_secondary_color"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtText_notification" />
 
     <ImageView
         android:id="@+id/imgUnviewed_notification"
