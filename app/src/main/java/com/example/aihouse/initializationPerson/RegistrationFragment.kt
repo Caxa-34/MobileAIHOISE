@@ -26,11 +26,12 @@ import com.example.aihouse.api.ApiHelper
 import com.example.aihouse.api.ApiService
 import com.example.aihouse.api.RegisterRequest
 import com.example.aihouse.databinding.FragmentRegistrationBinding
+import com.example.aihouse.databinding.VerificationDialogBinding
 import kotlinx.coroutines.launch
 
 class RegistrationFragment : Fragment() {
     private lateinit var binding: FragmentRegistrationBinding
-
+    private var code = 0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -108,38 +109,14 @@ class RegistrationFragment : Fragment() {
         var rulesDialog = Dialog(binding.btnRegistrationRegistration.context)
 
         rulesDialogBinding.findViewById<Button>(R.id.btnPositiveResult_rules).isEnabled = false
-        rulesDialogBinding.findViewById<Button>(R.id.btnPositiveResult_rules).backgroundTintList =
-            ContextCompat.getColorStateList(binding.btnRegistrationRegistration.context,
-                R.color.gray_secondary_color
-            )
-        rulesDialogBinding.findViewById<Button>(R.id.btnPositiveResult_rules).setTextColor(
-            ContextCompat.getColorStateList(binding.btnRegistrationRegistration.context,
-                R.color.white
-            ))
 
         rulesDialogBinding.findViewById<CheckBox>(R.id.chbAgree_rules).setOnCheckedChangeListener { buttonView, isChecked ->
             rulesDialogBinding.findViewById<Button>(R.id.btnPositiveResult_rules).isEnabled = isChecked
-            if (isChecked) {
-                rulesDialogBinding.findViewById<Button>(R.id.btnPositiveResult_rules).backgroundTintList = null
-                rulesDialogBinding.findViewById<Button>(R.id.btnPositiveResult_rules).setTextColor(
-                    ContextCompat.getColorStateList(binding.btnRegistrationRegistration.context,
-                        R.color.additional_color
-                    ))
-            }
-            else {
-                rulesDialogBinding.findViewById<Button>(R.id.btnPositiveResult_rules).backgroundTintList =
-                    ContextCompat.getColorStateList(binding.btnRegistrationRegistration.context,
-                        R.color.gray_secondary_color
-                    )
-                rulesDialogBinding.findViewById<Button>(R.id.btnPositiveResult_rules).setTextColor(
-                    ContextCompat.getColorStateList(binding.btnRegistrationRegistration.context,
-                        R.color.white
-                    ))
-            }
+
         }
         rulesDialogBinding.findViewById<Button>(R.id.btnPositiveResult_rules).setOnClickListener {
             rulesDialog.dismiss()
-            registration()
+            verification()
         }
 
         val txtRules = Helper.rules.joinToString(separator = "\n\n") { it.text }
@@ -149,6 +126,80 @@ class RegistrationFragment : Fragment() {
         rulesDialog.setCancelable(false)
         rulesDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         rulesDialog.show()
+    }
+
+    fun verification() {
+        var req = RegisterRequest(
+            name = binding.etNameRegistration.etTextEtcustom.text.toString(),
+            email = binding.etEmailRegistration.etTextEtcustom.text.toString(),
+            password = binding.etPasswordRegistration.etTextEtcustom.text.toString()
+        )
+        lifecycleScope.launch {
+            val result = ApiHelper.getCode(req)
+            result.onSuccess { response ->
+                //Toast.makeText(requireContext(), response.message, Toast.LENGTH_SHORT).show()
+
+                if (response.message == "EmailUsed") {
+                    binding.etEmailRegistration.etErrorEtcustom.setText("Email уже занят")
+                    binding.etEmailRegistration.etErrorEtcustom.visibility = View.VISIBLE
+                    return@launch
+                }
+                if (response.message == "NameUsed") {
+                    binding.etNameRegistration.etErrorEtcustom.setText("Имя уже занято")
+                    binding.etNameRegistration.etErrorEtcustom.visibility = View.VISIBLE
+                    return@launch
+                }
+
+                if (response.message == "CodeGenerated") {
+                    code = response.verificationCode!!
+                    showCodeVerification()
+                }
+            }.onFailure { error ->
+                //Toast.makeText(context, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    fun checkCode(strCode: String) : Boolean {
+        if (strCode.isNullOrEmpty()) return false
+        if (strCode.length < 4) return false
+        return true
+    }
+
+    fun showCodeVerification() {
+        var verificationDialogBinding = VerificationDialogBinding.inflate(layoutInflater)
+        var verificationDialog = Dialog(requireContext())
+        var etCodeBinding = verificationDialogBinding.etCodeVerification
+
+        verificationDialogBinding.btnPositiveResultVerification.isEnabled = false
+        etCodeBinding.etErrorEtcustom.setText("")
+
+        verificationDialogBinding.btnPositiveResultVerification.setOnClickListener {
+            var inputCode = etCodeBinding.etTextEtcustom.text.toString().toInt()
+            if (code == inputCode) {
+                verificationDialog.dismiss()
+                registration()
+            }
+            else {
+                etCodeBinding.etTextEtcustom.setText("")
+                etCodeBinding.etErrorEtcustom.setText("Неверный код")
+            }
+        }
+
+        etCodeBinding.etTextEtcustom.addTextChangedListener {
+            etCodeBinding.etErrorEtcustom.setText("")
+            if (!checkCode(etCodeBinding.etTextEtcustom.text.toString())) {
+                verificationDialogBinding.btnPositiveResultVerification.isEnabled = false
+            }
+            else {
+                verificationDialogBinding.btnPositiveResultVerification.isEnabled = true
+            }
+        }
+
+        verificationDialog.setContentView(verificationDialogBinding.root)
+        verificationDialog.setCancelable(false)
+        verificationDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        verificationDialog.show()
+        //Toast.makeText(requireContext(), "SHOWED", Toast.LENGTH_SHORT).show()
     }
 
     fun registration() {

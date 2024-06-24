@@ -1,8 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.AIHOUSE" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
 
         <item name="android:forceDarkAllowed">false</item>
         <item name="android:windowTranslucentStatus">true</item>
@@ -10,6 +8,5 @@
         <item name="statusBarBackground">@color/white</item>
 
     </style>
-
     <style name="Theme.AIHOUSE" parent="Base.Theme.AIHOUSE" />
 </resources>

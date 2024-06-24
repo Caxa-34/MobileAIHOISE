@@ -1,6 +1,9 @@
 package com.example.aihouse
 
 import android.app.Dialog
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -13,9 +16,11 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.aihouse.api.ApiHelper
 import com.example.aihouse.api.RegisterRequest
@@ -26,6 +31,7 @@ import com.example.aihouse.databinding.PersonLeftPanelBinding
 import com.example.aihouse.discussions.DiscussionsFeedFragment
 import com.example.aihouse.discussions.MyDiscussionsFragment
 import com.example.aihouse.person.MySubscriptionsFragment
+import com.example.aihouse.person.SettingsFragment
 import com.example.aihouse.publications.MyPublicationsFragment
 import com.example.aihouse.publications.PublicationsFeedFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -56,14 +62,20 @@ class MainFragment : Fragment() {
             controller.navigate(R.id.createPublicationFragment)
         }
         bindingActions.btnCreateDiscussionRightpanel.setOnClickListener {
-            controller.navigate(R.id.createDiscussionFragment)
+                controller.navigate(R.id.createDiscussionFragment)
         }
         bindingActions.btnSettingsRightpanel.setOnClickListener {
             controller.navigate(R.id.settingsFragment)
         }
+        bindingActions.txtSupportEmailRightpanel.setOnClickListener {
+            Helper.saveToBuffer(requireContext(), "ai.house@inbox.ru")
+            Toast.makeText(context, "Почта скопирована!", Toast.LENGTH_SHORT).show();
+        }
 
         // левая панель
         bindingPerson.btnCopyIdPersonLeftpanel.setOnClickListener {
+            val myID = Helper.currentUser.id.toString()
+            Helper.saveToBuffer(requireContext(), myID)
             Toast.makeText(context, "ID скопирован!", Toast.LENGTH_SHORT).show();
         }
         bindingPerson.btnNotificationLeftpanel.setOnClickListener {
@@ -75,7 +87,6 @@ class MainFragment : Fragment() {
         bindingPerson.btnExitAccountLeftpanel.setOnClickListener {
             showExitDialog()
         }
-
 
         // открытие панелей
         binding.imgAvatarMain.setOnClickListener {
@@ -109,6 +120,7 @@ class MainFragment : Fragment() {
                 else -> false
             }
         }
+
         bindingPerson.btnMyPublicationsLeftpanel.setOnClickListener {
             binding.drawerMain.closeDrawer(GravityCompat.START)
             setCurrentFeed(myPublications)
@@ -137,12 +149,17 @@ class MainFragment : Fragment() {
         if (act == "openLeftPanel")
             binding.drawerMain.openDrawer(GravityCompat.START)
 
+        binding.imgNotifMain.visibility = View.GONE
+
         showUserData()
     }
 
     private fun showUserData() {
         bindingPerson.txtNicknameLeftpanel.setText(Helper.currentUser.name)
         bindingPerson.txtIdPersonLeftpanel.setText("ID: " + Helper.currentUser.id)
+        Log.e("USER", Helper.currentUser.toString())
+        ApiHelper.loadImage(requireContext(), Helper.currentUser.imagePath!!, binding.imgAvatarMain)
+        ApiHelper.loadImage(requireContext(), Helper.currentUser.imagePath!!, bindingPerson.imgAvatarLeftpanel)
         var req = UserRequest(
             idUser = Helper.currentUser.id
         )
@@ -150,13 +167,17 @@ class MainFragment : Fragment() {
             val result = ApiHelper.getMyNotifs(req)
             result.onSuccess { response ->
                 Helper.notifications = response.notifications!!
+
                 val readntCount = Helper.notifications.count { !it.wasRead!! }
+
+                binding.imgNotifMain.visibility = View.VISIBLE
                 bindingPerson.txtNotifLeftpanel.setText(readntCount.toString())
                 if (readntCount == 0) {
                     bindingPerson.imgNotifLeftpanel.setImageResource(R.drawable.ic_no_notification)
                     bindingPerson.txtNotifLeftpanel.setText("")
                     binding.imgNotifMain.visibility = View.GONE
                 }
+
             }.onFailure { error ->
                 Log.e("ERROR NOTIF", "Error: ${error.message}")
             }

@@ -68,7 +68,11 @@ class MySubscriptionsFragment : Fragment() {
     }
 
     private fun search() {
-        Toast.makeText(requireNotNull(context), "Search", Toast.LENGTH_SHORT).show()
+        var text = binding.searchMysubs.text.toString()
+        var usersSearch = users.filter { Helper.isUserMatch(it, text) }
+        adapterUsers = UserFeedAdapter(requireContext(), usersSearch, lifecycleScope)
+        binding.subscriptionsMysubs.layoutManager = LinearLayoutManager(context)
+        binding.subscriptionsMysubs.adapter = adapterUsers
     }
 
     private fun showMy() {

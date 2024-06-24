@@ -3,14 +3,17 @@ package com.example.aihouse.publications
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.aihouse.Helper
+import com.example.aihouse.R
 import com.example.aihouse.api.ApiHelper
 import com.example.aihouse.api.LikePublicationRequest
 import com.example.aihouse.api.SubscribeReqest
@@ -42,15 +45,27 @@ class UserFeedAdapter(private val context: Context, private val users: List<User
         with(holder.binding) {
             txtIDUsercard.text = "ID: " + user.id.toString()
             txtNameUsercard.text = user.name
+            ApiHelper.loadImage(context, user.imagePath!!, imgAvatarUsercard)
             btnSubcribeUsercard.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (userClick)
                     subscribe(user, isChecked, btnSubcribeUsercard)
                 userClick = true
             }
+            imgAvatarUsercard.setOnClickListener {
+                navToUserPage(it, user)
+            }
+            txtNameUsercard.setOnClickListener {
+                navToUserPage(it, user)
+            }
             userClick = false
             btnSubcribeUsercard.isChecked = user.isSetSubscribe!!
             userClick = true
         }
+    }
+
+    fun navToUserPage(view: View, user: User) {
+        Helper.clickedUser = user
+        view.findNavController().navigate(R.id.userPageFragment)
     }
 
     private fun subscribe(user : User, subscribe : Boolean, btnSub : CheckBox) {
@@ -66,7 +81,12 @@ class UserFeedAdapter(private val context: Context, private val users: List<User
             val res = ApiHelper.subscribe(req)
             res.onSuccess { response ->
                 //Toast.makeText(context, "Like " + type, Toast.LENGTH_SHORT).show()
-
+                if (response.result == "Subscribed") {
+                    user.isSetSubscribe = true
+                }
+                if (response.result == "Unsubscribed") {
+                    user.isSetSubscribe = false
+                }
                 if (response.result == "SubscribeWasnt" || response.result == "SubscribeWas") {
                     userClick = false
                     btnSub.isChecked = !subscribe

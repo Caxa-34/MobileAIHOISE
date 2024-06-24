@@ -77,6 +77,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <ImageView
+                android:id="@+id/imgRead_publicationcard"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_read" />
+
             <CheckBox
                 android:id="@+id/btnSubscribe_publicationcard"
                 android:layout_width="24dp"

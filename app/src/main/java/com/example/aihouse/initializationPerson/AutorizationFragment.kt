@@ -139,6 +139,16 @@ class AutorizationFragment : Fragment() {
                     binding.etPassAutorization.etErrorEtcustom.visibility = View.VISIBLE
                     return@launch
                 }
+                if (response.message == "UserBanned") {
+                    binding.etPassAutorization.etErrorEtcustom.setText("Пользователь забанен")
+                    binding.etPassAutorization.etErrorEtcustom.visibility = View.VISIBLE
+                    return@launch
+                }
+                if (response.message == "UserDeleted") {
+                    binding.etPassAutorization.etErrorEtcustom.setText("Пользователь удалён")
+                    binding.etPassAutorization.etErrorEtcustom.visibility = View.VISIBLE
+                    return@launch
+                }
 
                 Helper.currentUser = response.userData!!
                 Helper.saveUserData(requireContext(), Helper.currentUser.email, Helper.currentUser.name, req.password)
@@ -161,6 +171,16 @@ class AutorizationFragment : Fragment() {
                 }
                 if (response.message == "InvalidPass") {
                     binding.etPassAutorization.etErrorEtcustom.setText("Неверный пароль")
+                    binding.etPassAutorization.etErrorEtcustom.visibility = View.VISIBLE
+                    return@launch
+                }
+                if (response.message == "UserBanned") {
+                    binding.etPassAutorization.etErrorEtcustom.setText("Пользователь забанен")
+                    binding.etPassAutorization.etErrorEtcustom.visibility = View.VISIBLE
+                    return@launch
+                }
+                if (response.message == "UserDeleted") {
+                    binding.etPassAutorization.etErrorEtcustom.setText("Пользователь удалён")
                     binding.etPassAutorization.etErrorEtcustom.visibility = View.VISIBLE
                     return@launch
                 }

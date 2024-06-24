@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_layout"
+    android:orientation="vertical"
+    android:paddingHorizontal="16dp">
+
+    <TextView
+        style="@style/headerText"
+        android:layout_width="256dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Введите код с почты"
+        android:textSize="24sp" />
+
+    <include
+        android:id="@+id/etCode_verification"
+        layout="@layout/inpute_code_custom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/btnPositiveResult_verification"
+        style="@style/accentButton"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="16dp"
+        android:text="Регистрация" />
+
+</LinearLayout>

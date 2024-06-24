@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/white"
     tools:context=".discussions.DiscussionFragment">
 
     <View
@@ -12,13 +14,13 @@
         android:layout_marginTop="-32dp"
         android:layout_marginBottom="-32dp"
         android:background="@color/main_color"
-        app:layout_constraintBottom_toTopOf="@+id/llBottom_notification"
+        app:layout_constraintBottom_toTopOf="@+id/llBottom_discussion"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llTop_notification" />
+        app:layout_constraintTop_toBottomOf="@+id/llTop_discussion" />
 
     <LinearLayout
-        android:id="@+id/llTop_notification"
+        android:id="@+id/llTop_discussion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_top_layout"
@@ -31,7 +33,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="24dp">
 
             <TextView
@@ -45,7 +47,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/btnBack_notification"
+                android:id="@+id/btnBack_discussion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -59,7 +61,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/llBottom_notification"
+        android:id="@+id/llBottom_discussion"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -68,65 +70,168 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llTop_notification">
+        app:layout_constraintTop_toBottomOf="@+id/llTop_discussion">
 
-        <include
-            layout="@layout/discussion_card"
+        <LinearLayout
+            android:id="@+id/info_discussion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="32dp"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imgIcon_discussion"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ava3"
+                app:shapeAppearance="@style/cornerImageDiscussion"
+                app:shapeAppearanceOverlay="@style/cornerImageDiscussion" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/textView">
+
+                <TextView
+                    android:id="@+id/txtTitle_discussion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="36dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="Название обсуждения"
+                    android:textColor="@color/gray_primary_color"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:layout_conversion_absoluteHeight="19dp"
+                    tools:layout_conversion_absoluteWidth="57dp" />
+
+                <LinearLayout
+                    android:id="@+id/llIsAnswered_discussion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_read" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto"
+                        android:text="Вопрос решён"
+                        android:textColor="@color/gray_secondary_color"
+                        android:textSize="14sp"
+                        tools:layout_conversion_absoluteHeight="19dp"
+                        tools:layout_conversion_absoluteWidth="57dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_user"
+                        app:tint="@color/gray_secondary_color" />
+
+                    <TextView
+                        android:id="@+id/txtCountParticipans_discussion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/roboto"
+                        android:text="123457"
+                        android:textColor="@color/gray_secondary_color"
+                        android:textSize="14sp"
+                        tools:layout_conversion_absoluteHeight="19dp"
+                        tools:layout_conversion_absoluteWidth="57dp" />
+
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="8dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/divider" />
+
+        <LinearLayout
+            android:id="@+id/llQuestion_discussion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="32dp"
+            android:background="@drawable/background_top_layout"
+            android:elevation="2dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtQuestion_discussion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="4dp"
+                android:fontFamily="@font/roboto"
+                android:text="TextView"
+                android:textColor="@color/gray_primary_color"
+                android:textSize="12sp" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="32dp"
-            android:layout_marginVertical="8dp"
+            android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:orientation="horizontal">
 
             <ScrollView
+                android:id="@+id/scrollview_discussion"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:scrollbarThumbVertical="@drawable/custom_scrollbar_vert"
                 android:scrollbars="none">
 
-                <LinearLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/messages_discussion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:orientation="vertical">
-
-                    <include
-                        layout="@layout/user_publication_card"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp" />
-
-                    <include
-                        layout="@layout/user_publication_card"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp" />
-
-                    <include
-                        layout="@layout/user_publication_card"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp" />
-
-                </LinearLayout>
+                    android:orientation="vertical" />
             </ScrollView>
 
-            <include
-                layout="@layout/buttons_listing"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
         </LinearLayout>
 
         <include
+            android:id="@+id/etInput_discussion"
             layout="@layout/write_message_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

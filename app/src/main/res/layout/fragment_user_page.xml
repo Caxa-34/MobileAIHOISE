@@ -12,13 +12,13 @@
         android:layout_marginTop="-32dp"
         android:layout_marginBottom="-32dp"
         android:background="@color/main_color"
-        app:layout_constraintBottom_toTopOf="@+id/llBottom_notification"
+        app:layout_constraintBottom_toTopOf="@+id/llBottom_userpage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llTop_notification" />
+        app:layout_constraintTop_toBottomOf="@+id/llTop_userpage" />
 
     <LinearLayout
-        android:id="@+id/llTop_notification"
+        android:id="@+id/llTop_userpage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_top_layout"
@@ -45,7 +45,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/btnBack_notification"
+                android:id="@+id/btnBack_userpage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -54,13 +54,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/btnSubscribe_notification"
+            <CheckBox
+                android:id="@+id/btnSubscribe_userpage"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_marginEnd="32dp"
-                android:src="@drawable/ic_subscribe"
-                android:tint="@color/gray_primary_color"
+                android:layout_marginEnd="24dp"
+                android:button="@drawable/button_subscribe_selector"
+                android:scaleX="1.5"
+                android:scaleY="1.5"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -77,10 +78,11 @@
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llTop_notification">
+        app:layout_constraintTop_toBottomOf="@+id/llTop_userpage">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btnUserInfo_userpage"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="-32dp"
@@ -91,6 +93,7 @@
             app:layout_constraintTop_toBottomOf="@+id/llCenterData_userpage">
 
             <ImageView
+                android:id="@+id/imgArrow_userpage"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginBottom="4dp"
@@ -105,19 +108,20 @@
         <LinearLayout
             android:id="@+id/llCenterData_userpage"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="128dp"
             android:background="@drawable/background_layout"
             android:orientation="vertical"
             android:paddingHorizontal="32dp">
 
             <LinearLayout
-                android:id="@+id/userMainData_userdata"
+                android:id="@+id/userMainData_userpage"
                 android:layout_width="match_parent"
                 android:layout_height="128dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imgAvatar_userpage"
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:scaleType="fitCenter"
@@ -136,6 +140,7 @@
                     android:padding="8dp">
 
                     <TextView
+                        android:id="@+id/txtName_userpage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -149,8 +154,10 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <LinearLayout
+                        android:id="@+id/btnCopyID_userpage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="64dp"
                         android:gravity="bottom|center_horizontal"
                         android:orientation="horizontal"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -162,7 +169,7 @@
                             app:srcCompat="@drawable/ic_copy" />
 
                         <TextView
-                            android:id="@+id/txtIdPerson_leftpanel"
+                            android:id="@+id/txtID_userpage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
@@ -178,7 +185,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/userAdditionalData_userdata"
+                android:id="@+id/userAdditionalData_userpage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -206,6 +213,7 @@
                             android:textSize="14sp" />
 
                         <TextView
+                            android:id="@+id/txtGender_userpage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto"
@@ -232,6 +240,7 @@
                             android:textSize="14sp" />
 
                         <TextView
+                            android:id="@+id/txtAge_userpage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto"
@@ -244,13 +253,13 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <EditText
-                    android:id="@+id/etReason_delacc"
+                    android:id="@+id/txtAbout_userpage"
                     android:layout_width="match_parent"
                     android:layout_height="96dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/background_enter_small_text"
-                    android:ems="10"
+                    android:enabled="false"
                     android:fontFamily="@font/roboto"
                     android:gravity="start|top"
                     android:inputType="textMultiLine"
@@ -266,7 +275,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-        android:id="@+id/llBottom_notification"
+        android:id="@+id/llBottom_userpage"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -293,31 +302,12 @@
             android:scrollbarThumbVertical="@drawable/custom_scrollbar_vert"
             android:scrollbars="none">
 
-            <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listUserPublications_userpage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingHorizontal="2dp">
-
-                <include
-                    layout="@layout/user_publication_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-                <include
-                    layout="@layout/user_publication_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-                <include
-                    layout="@layout/user_publication_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-            </LinearLayout>
+                android:paddingHorizontal="2dp" />
         </ScrollView>
 
     </LinearLayout>

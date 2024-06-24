@@ -170,4 +170,8 @@
         <!-- Цвет текста для вторичных элементов -->
         <item name="android:textColorSecondary">@color/gray_secondary_color</item>
     </style>
+    <style name="PopupMenuStyle" parent="@style/Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@drawable/background_layout</item>
+        <item name="android:overlapAnchor">true</item> <!-- Для корректного отображения разделителя -->
+    </style>
 </resources>

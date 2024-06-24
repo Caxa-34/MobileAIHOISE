@@ -50,8 +50,18 @@ class MyPublicationsFragment : Fragment() {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (binding.filterPublishedMypublications.isChecked) showPublications()
-                    if (binding.filterDraftsMypublications.isChecked) showDrafts()
+                    val currentSearchNotEmpty = s?.isNotEmpty() ?: false
+
+                    if (binding.filterPublishedMypublications.isChecked)
+                        if (currentSearchNotEmpty)
+                            searchPublications()
+                        else
+                            showPublications()
+                    if (binding.filterDraftsMypublications.isChecked)
+                        if (currentSearchNotEmpty)
+                            searchDrafts()
+                        else
+                            showDrafts()
                 }
 
                 override fun afterTextChanged(s: Editable?) {}
@@ -91,6 +101,16 @@ class MyPublicationsFragment : Fragment() {
         }
     }
 
+    fun searchDrafts() {
+        var fragment = binding.searchMypublications.text.toString()
+        var draftsSearch = drafts.filter { Helper.hasSearchPublicationMatch(it.title!!, it.text!!, fragment) }
+        draftsSearch = draftsSearch.sortedByDescending { Helper.searchScorePublication(it.title!!, it.text!!, fragment) }
+
+        adapterDrafts = MyDraftAdapter(requireContext(), draftsSearch, findNavController())
+        binding.listMypublications.layoutManager = LinearLayoutManager(context)
+        binding.listMypublications.adapter = adapterPublications
+    }
+
     private fun showPublications() {
         var req = UserRequest(
             idUser = Helper.currentUser.id
@@ -105,13 +125,23 @@ class MyPublicationsFragment : Fragment() {
                 if (!searchText.isNullOrEmpty())
                     publications = publications.filter { it.title!!.contains(searchText) }
 
-                adapterPublications = MyPublicationAdapter(requireContext(), publications, lifecycleScope)
+                adapterPublications = MyPublicationAdapter(requireContext(), publications, lifecycleScope, true)
                 binding.listMypublications.layoutManager = LinearLayoutManager(context)
                 binding.listMypublications.adapter = adapterPublications
             }.onFailure { error ->
 
             }
         }
+    }
+
+    fun searchPublications() {
+        var fragment = binding.searchMypublications.text.toString()
+        var publicationsSearch = publications.filter { Helper.hasSearchPublicationMatch(it.title!!, it.text!!, fragment) }
+        publicationsSearch = publicationsSearch.sortedByDescending { Helper.searchScorePublication(it.title!!, it.text!!, fragment) }
+
+        adapterPublications = MyPublicationAdapter(requireContext(), publicationsSearch, lifecycleScope, true)
+        binding.listMypublications.layoutManager = LinearLayoutManager(context)
+        binding.listMypublications.adapter = adapterPublications
     }
 
     override fun onDestroy() {

@@ -15,8 +15,9 @@ data class User (
     val age: Int?,
     val aboutMe: String?,
     val idState: Int?,
-    val countLetters: Int?,
-    var isSetSubscribe: Boolean?
+    var isSetSubscribe: Boolean?,
+    var imagePath: String?,
+    var gender: String?
 )
 
 data class Draft (
@@ -30,13 +31,6 @@ data class Draft (
 data class Rule (
     val id: Int,
     val text: String
-)
-data class Image (
-    val id: Int,
-    val name: String,
-    val idTypeOwner: Int,
-    val idTypeImage: Int,
-    val dateDownload: String
 )
 
 data class UserGender (
@@ -65,8 +59,10 @@ data class PublicationComment(
     val idPublication: Int?,
     val idAuthor: Int?,
     val dateCreate: String?,
-    val countLikes: Int?
-)
+    val author: User?,
+    var countLikes: Int?,
+    var isSetLike: Boolean?
+    )
 
 data class Publication(
     val id: Int?,
@@ -74,13 +70,15 @@ data class Publication(
     val text: String?,
     val idAuthor: Int?,
     val dateCreate: String?,
-    val countLikes: Int?,
+    var countLikes: Int?,
     val countComments: Int?,
     val countComplaints: Int?,
-    val countLetters: Int?,
     val author: User?,
-    val isSetLike: Boolean?,
-    var isSetSubscribe: Boolean?
+    var isSetLike: Boolean?,
+    var isSetSubscribe: Boolean?,
+    var isSetComplaint: Boolean?,
+    var comments: List<PublicationComment>?,
+    val isRead: Boolean?
 )
 
 data class Notification(
@@ -96,3 +94,36 @@ data class Notification(
     val dateCreate: String?
 )
 
+data class Violation(
+    var id: Int,
+    var text: String
+)
+
+data class Complaint(
+    val id: Int,
+    val text: String,
+    val count: Int
+)
+
+data class DiscussionMessage(
+    var id: Int,
+    var text: String,
+    var idDiscussion: Int,
+    var idAuthor: Int,
+    var dateCreate: String,
+    var isAnswer: Boolean,
+    var author: User
+)
+
+data class Discussion(
+    var id: Int,
+    var title: String,
+    var textQuestion: String,
+    var icon: String,
+    var dateCreate: String,
+    var dateUpdate: String,
+    var idAuthor: Int,
+    var countParticipants: Int,
+    var isAnswered: Boolean,
+    var messages: List<DiscussionMessage>?
+)

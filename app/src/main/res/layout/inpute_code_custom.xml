@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    android:nextFocusDown="@id/etText_etcustom"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/etError_etcustom"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:layout_marginLeft="16dp"
+        android:fontFamily="@font/roboto"
+        android:textColor="@color/error_color"
+        android:textSize="12sp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/etBackground_etcustom"
+        style="@style/enterText"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:paddingVertical="8dp">
+
+        <EditText
+            android:id="@+id/etText_etcustom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/roboto_bold"
+            android:hint="_ _ _ _"
+            android:maxLength="4"
+            android:numeric="signed"
+            android:textAlignment="center"
+            android:textColor="@color/gray_primary_color"
+            android:textColorHint="@color/gray_secondary_color"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

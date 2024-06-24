@@ -82,9 +82,10 @@ class SettingsFragment : Fragment() {
 
         // кнопка назад
         binding.btnBackSettings.setOnClickListener {
-            var bundle = Bundle()
-            bundle.putString("act", "openRightPanel")
-            controller.navigate(R.id.mainFragment, bundle)
+            // var bundle = Bundle()
+            // bundle.putString("act", "openRightPanel")
+            // controller.navigate(R.id.mainFragment, bundle)
+            controller.popBackStack()
         }
 
         // настройки аккаунта

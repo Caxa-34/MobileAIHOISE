@@ -10,16 +10,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.aihouse.Helper
+import com.example.aihouse.api.ApiHelper
 import com.example.aihouse.databinding.FragmentDiscussionsFeedBinding
+import com.example.aihouse.models.Discussion
+import com.example.aihouse.models.Publication
+import com.example.aihouse.publications.PublicationFeedAdapter
+import kotlinx.coroutines.launch
 
 class DiscussionsFeedFragment : Fragment() {
     private lateinit var binding: FragmentDiscussionsFeedBinding
     private var textWatcher: TextWatcher? = null
+    lateinit var discussionsFeed: List<Discussion>
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentDiscussionsFeedBinding.inflate(inflater, container, false)
         return binding.root
@@ -65,11 +75,28 @@ class DiscussionsFeedFragment : Fragment() {
     }
 
     private fun search() {
-        Toast.makeText(requireNotNull(context), "Search", Toast.LENGTH_SHORT).show()
+        var fragment = binding.searchDiscussionsfeed.text.toString()
+        var publicationsSearched = discussionsFeed.filter { Helper.hasSearchPublicationMatch(it.title, it.textQuestion, fragment) }
+        publicationsSearched = publicationsSearched.sortedByDescending { Helper.searchScorePublication(it.title, it.textQuestion, fragment) }
+
+        var adapterFeed = DiscussionFeedAdapter(requireContext(), publicationsSearched, lifecycleScope)
+        binding.discussionsfeed.layoutManager = LinearLayoutManager(context)
+        binding.discussionsfeed.adapter = adapterFeed
     }
 
     private fun showfeed() {
-        Toast.makeText(requireNotNull(context), "Feed", Toast.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            val res = ApiHelper.getDiscussions()
+            res.onSuccess { response ->
+                discussionsFeed = response.discussions!!
+                var adapterFeed = DiscussionFeedAdapter(requireContext(), discussionsFeed, lifecycleScope)
+                binding.discussionsfeed.layoutManager = LinearLayoutManager(context)
+                binding.discussionsfeed.adapter = adapterFeed
+
+            }.onFailure { error ->
+                Log.e("Get discussions", error.message.toString())
+            }
+        }
     }
 
     override fun onDestroy() {

@@ -9,6 +9,7 @@
     tools:context=".cards.PublicationCard">
 
     <TextView
+        android:id="@+id/txtTitle_fullpub"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_medium"
@@ -30,6 +31,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imgAvatar_fullcard"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:scaleType="fitCenter"
@@ -47,6 +49,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView">
 
                 <TextView
+                    android:id="@+id/txtName_fullpub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -60,6 +63,7 @@
                     tools:layout_conversion_absoluteWidth="57dp" />
 
                 <TextView
+                    android:id="@+id/txtTime_fullpub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
@@ -83,21 +87,22 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
+            <CheckBox
+                android:id="@+id/btnSubscribe_fullpub"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginLeft="16dp"
-                android:src="@drawable/ic_subscribe" />
+                android:button="@drawable/button_subscribe_selector" />
 
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
+        android:id="@+id/txtText_fullpub"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto"
-        android:maxHeight="96dp"
         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat sunt in culpa qui officia deserunt mollit anim id est laborum. Excepteur sint occaecat proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Excepteur sint occaecat proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
         android:textColor="@color/gray_primary_color"
         android:textSize="16sp" />
@@ -107,15 +112,33 @@
         android:layout_height="match_parent"
         android:layout_marginVertical="8dp">
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_warning"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <CheckBox
+                android:id="@+id/btnComplaint_fullpub"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:button="@drawable/button_complaint_selector" />
+
+            <TextView
+                android:id="@+id/txtCountComplaints_fullpubs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto"
+                android:text="99"
+                android:textColor="@color/gray_primary_color"
+                android:textSize="14sp" />
+        </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal"
@@ -129,12 +152,14 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <ImageView
+                <CheckBox
+                    android:id="@+id/btnLike_fullpub"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_like" />
+                    android:button="@drawable/button_like_selector" />
 
                 <TextView
+                    android:id="@+id/txtCountLikes_fullpub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
@@ -150,12 +175,15 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <ImageView
+                <CheckBox
+                    android:id="@+id/btnComment_fullpub"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_like" />
+                    android:button="@drawable/ic_comment"
+                    android:enabled="false" />
 
                 <TextView
+                    android:id="@+id/txtCountComments_fullpub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"

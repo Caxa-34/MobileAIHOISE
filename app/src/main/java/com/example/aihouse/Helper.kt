@@ -1,17 +1,32 @@
 package com.example.aihouse
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.util.Log
+import com.example.aihouse.models.Discussion
 import com.example.aihouse.models.Draft
 import com.example.aihouse.models.Notification
+import com.example.aihouse.models.Publication
 import com.example.aihouse.models.Rule
 import com.example.aihouse.models.User
 
 object Helper {
     lateinit var currentUser: User
+
     var clickedDraft : Draft? = null
+    var clickedPublication : Publication? = null
+    var clickedDiscussion : Discussion? = null
+    var clickedUser : User? = null
+
     lateinit var rules: List<Rule>
     lateinit var notifications: List<Notification>
+
+    fun saveToBuffer(context: Context, text: String) {
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("buffer", text)
+        clipboard.setPrimaryClip(clip)
+    }
     fun saveUserData(context: Context, email: String, username: String, password: String) {
         val sharedPreferences = context.getSharedPreferences("user_pref", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
@@ -26,8 +41,12 @@ object Helper {
         val text = pubText.lowercase()
         var score = 0
         for (word in searchWords) {
-            score += title.split(word).size // Подсчет вхождений слова в заголовок
-            score += text.split(word).size - 1 // Подсчет вхождений слова в текст
+            if (title.contains(word)) {
+                score += 10
+            }
+            if (text.contains(word)) {
+                score += 1
+            }
         }
         return score
     }

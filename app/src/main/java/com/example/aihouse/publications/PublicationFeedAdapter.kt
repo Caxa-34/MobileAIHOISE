@@ -3,19 +3,23 @@ package com.example.aihouse.publications
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.aihouse.Helper
+import com.example.aihouse.R
 import com.example.aihouse.api.ApiHelper
 import com.example.aihouse.api.LikePublicationRequest
 import com.example.aihouse.api.SubscribeReqest
 import com.example.aihouse.databinding.PublicationCardBinding
 import com.example.aihouse.models.Publication
+import com.example.aihouse.models.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -44,6 +48,10 @@ class PublicationFeedAdapter(private val context: Context, private val publicati
             txtNameAuthorPublicationcard.text = publication.author?.name
             txtDateCreationPublicationcard.text = ApiHelper.formatDateTime(ApiHelper.parseDateTime(publication.dateCreate!!))
             txtCountLikesPublicationcard.text = publication.countLikes.toString()
+            if (publication.isRead!!) imgReadPublicationcard.visibility = View.VISIBLE
+            else imgReadPublicationcard.visibility = View.GONE
+
+            ApiHelper.loadImage(context, publication.author?.imagePath!!, imgAvatarAuthorPublicationcard)
             btnLikePublicationcard.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (userClick)
                     like(publication, isChecked, txtCountLikesPublicationcard, btnLikePublicationcard)
@@ -54,12 +62,35 @@ class PublicationFeedAdapter(private val context: Context, private val publicati
                     subscribe(publication, isChecked, btnSubscribePublicationcard)
                 userClick = true
             }
+            txtTextPublicationcard.setOnClickListener {
+                navToPublication(it, publication)
+            }
+            txtTitlePublicationcard.setOnClickListener {
+                navToPublication(it, publication)
+            }
+            imgAvatarAuthorPublicationcard.setOnClickListener {
+                navToUserPage(it, publication.author)
+            }
+            txtNameAuthorPublicationcard.setOnClickListener {
+                navToUserPage(it, publication.author)
+            }
+
             userClick = false
             btnLikePublicationcard.isChecked = publication.isSetLike!!
             userClick = false
             btnSubscribePublicationcard.isChecked = publication.isSetSubscribe!!
             userClick = true
         }
+    }
+
+    fun navToPublication(view: View, pub: Publication) {
+        Helper.clickedPublication = pub
+        view.findNavController().navigate(R.id.publicationFragment)
+    }
+
+    fun navToUserPage(view: View, user: User) {
+        Helper.clickedUser = user
+        view.findNavController().navigate(R.id.userPageFragment)
     }
 
     private fun like(publication : Publication, like : Boolean, txtLikes : TextView, btnLike : CheckBox) {
@@ -76,8 +107,14 @@ class PublicationFeedAdapter(private val context: Context, private val publicati
             res.onSuccess { response ->
                 //Toast.makeText(context, "Like " + type, Toast.LENGTH_SHORT).show()
                 txtLikes.setText(response.countLikes.toString())
-                if (response.result == "LikeRemoved" || response.result == "LikeSetted") {
+                publication.countLikes = response.countLikes
+                if (response.result == "LikeRemoved") {
                     userClick = true
+                    publication.isSetLike = false
+                }
+                if (response.result == "LikeSetted") {
+                    userClick = true
+                    publication.isSetLike = true
                 }
                 if (response.result == "LikeWasnt" || response.result == "LikeWas") {
                     userClick = false
@@ -107,9 +144,13 @@ class PublicationFeedAdapter(private val context: Context, private val publicati
                 //Toast.makeText(context, "Like " + type, Toast.LENGTH_SHORT).show()
                 if (response.result == "Unsubscribed") {
                     setSubs(publication.idAuthor, false)
+                    userClick = true
+                    publication.isSetSubscribe = false
                 }
                 if (response.result == "Subscribed") {
                     setSubs(publication.idAuthor, true)
+                    userClick = true
+                    publication.isSetSubscribe = true
                 }
                 if (response.result == "SubscribeWasnt" || response.result == "SubscribeWas") {
                     userClick = false
